@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
-  before_action :authorize, only: [:show]
+  before_action :set_user, only: [:show, :update]
+  before_action :authorize, only: [:show, :update]
 
   # SHOW LIST (ko can cho user, neu can dung cho admin cung dc, de check thoi)
   def index
@@ -36,6 +36,15 @@ class UsersController < ApplicationController
     end
   end
 
+
+  # UPDATE
+  def update
+    if @user.update(user_params)
+      render json: @user
+    else
+      render json: @user.errors, status: 422
+    end
+  end
 
 
 

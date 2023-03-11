@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
-  def encode_token
-    payload[:exp] = 30.days.after.to_i
-    JWT.encode(payload, 'thaogibi')
+  def encode_token(payload)
+    payload[:exp] =  30.days.after.to_i
+    JWT.encode(payload, 'gibi')
   end
 
   def decode_token
@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
     if author_header
       token = author_header.split(' ')[1]
       begin
-        JWT.decode(token, 'thaogibi', true, alg: 'HS256')
+        JWT.decode(token, 'gibi', true, alg: 'HS256')
       rescue JWT::DecodeError
         nil
       end
@@ -21,7 +21,7 @@ class ApplicationController < ActionController::API
     decoded_token = decode_token()
     if decoded_token
       user_id = decode_token[0]['user_id']
-      @user = User.find_by_id[user_id]
+      @user = User.find_by_id(user_id)
     end
   end
 
