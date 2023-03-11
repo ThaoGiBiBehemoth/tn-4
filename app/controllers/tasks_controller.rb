@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :authorize
-  before_action :set_task, only: [:show]
+  before_action :set_task, only: [:show, :update, :destroy]
 
   #SHOW LIST
   def index
@@ -24,6 +24,23 @@ class TasksController < ApplicationController
     end
   end
 
+  #update
+  def update
+    if @task.update(task_params)
+      render json: @task
+    else
+      render json: @task.errors, status: 422 #:unprocessable_entity
+    end
+  end
+
+  # DELETE
+    def destroy
+      if @task.destroy
+        render json: { message: 'Delete done.'}, status: 200
+      else
+        render json: @task.errors, status: 422 #:unprocessable_entity
+      end
+    end
 
   private
   def set_task
