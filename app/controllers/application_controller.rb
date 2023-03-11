@@ -1,2 +1,31 @@
 class ApplicationController < ActionController::API
+  def encode_token
+    payload[:exp] = 30.days.after.to_i
+    JWT.encode(payload, 'thaogibi')
+  end
+
+  def decode_token
+    author_header = request.headers['Authoziration']
+
+    if author_header
+      token = author_header.split(' ')[1]
+      begin
+        JWT.decode(token, 'thaogibi', true, alg: 'HS256')
+      rescue JWT::DecodeError
+        nil
+      end
+    end
+  end
+
+  def authorized_user
+    decoded_token = decode_token()
+    if decoded_token
+      user_id = decode_token[0]['user_id']
+      @user = User.find_by_id[user_id]
+    end
+  end
+
+  def authorize
+    render json: { message: 'You must login to access.'}, status: 401 unless authorized_user
+  end
 end
