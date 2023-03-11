@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   end
 
   def decode_token
-    author_header = request.headers['Authoziration']
+    author_header = request.headers['Authorization']
 
     if author_header
       token = author_header.split(' ')[1]
@@ -26,6 +26,8 @@ class ApplicationController < ActionController::API
   end
 
   def authorize
-    render json: { message: 'You must login to access.'}, status: 401 unless authorized_user
+    unless authorized_user
+      render json: { message: 'You must log in.' }, status: 422
+    end
   end
 end
